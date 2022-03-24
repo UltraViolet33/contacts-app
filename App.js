@@ -1,21 +1,17 @@
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Text, View, FlatList } from "react-native";
 import { useState, useEffect } from "react";
-import Contact from "./components/Contact";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Header from "./components/Header";
-import Input from "./components/Input";
+import Contact from "./components/Contact";
+import Inputs from "./components/Inputs";
 
 export default function App() {
+  //STATE
   const [contacts, setContacts] = useState([]);
   const [contact, setContact] = useState({});
 
+  // handle the name/email/phone number for contact
   const handleAddName = (name) => {
     const tmpContact = { ...contact };
     tmpContact.name = name;
@@ -34,23 +30,46 @@ export default function App() {
     setContact(tmpContact);
   };
 
+  // add a contact to contacts
   const addContact = () => {
-    if (contact.name != "" && contact.name != undefined) {
+    const regexEmail = new RegExp("[a-z0-9]+@[a-z]+.[a-z]{2,3}");
+    const regexPhoneNumber = /^((\+)33|0)[1-9](\d{2}){4}$/;
+
+    //check the name
+    if (contact.name === "" || contact.name === undefined) {
+      alert("Vous devez entrez un nom valide ! ");
+      //check the email
+    } else if (contact.email !== undefined && !regexEmail.test(contact.email)) {
+      alert("Vous devez entrez une adresse email valide ! ");
+      const tmpContact = { ...contact };
+      tmpContact.email = undefined;
+      setContact(tmpContact);
+      // check the phone number
+    } else if (
+      contact.phone !== undefined &&
+      !contact.phone.match(regexPhoneNumber)
+    ) {
+      alert("Vous devez entrez un numéro de téléphone valide ! ");
+      const tmpContact = { ...contact };
+      tmpContact.phone = undefined;
+      setContact(tmpContact);
+    } else {
+      // add the contact to the state contacts
       const tmpContacts = [...contacts];
       tmpContacts.push(contact);
       setContacts(tmpContacts);
       setContact({});
-    } else {
-      alert("Vous devez entrer en nom valide !");
     }
   };
 
+  // delete a contact
   const deleteContact = (index) => {
     const tmpContacts = [...contacts];
     tmpContacts.splice(index, 1);
     setContacts(tmpContacts);
   };
 
+  //get the contacts from the asyncStorage or return []
   useEffect(() => {
     AsyncStorage.getItem("contacts").then((jsonContacts) => {
       const newContacts = JSON.parse(jsonContacts || "[]");
@@ -58,6 +77,7 @@ export default function App() {
     });
   }, []);
 
+  // save the contacts
   useEffect(() => {
     AsyncStorage.setItem("contacts", JSON.stringify(contacts))
       .then(() => {
@@ -93,26 +113,13 @@ export default function App() {
           keyExtractor={(item, index) => index}
         ></FlatList>
       </View>
-      <View style={styles.inputsContainer}>
-        <Input
-          onChange={handleAddName}
-          placeHold="Entrez le nom du contact"
-          valueInput={contact.name}
-        ></Input>
-        <Input
-          onChange={handleAddEmail}
-          placeHold="Entrez son email"
-          valueInput={contact.email}
-        ></Input>
-        <Input
-          onChange={handleAddPhone}
-          placeHold="Entrez son numéro de téléphone"
-          valueInput={contact.phone}
-        ></Input>
-        <TouchableOpacity style={styles.button} onPress={addContact}>
-          <Text style={styles.textBtn}>Valider</Text>
-        </TouchableOpacity>
-      </View>
+      <Inputs
+        handleAddName={handleAddName}
+        handleAddEmail={handleAddEmail}
+        handleAddPhone={handleAddPhone}
+        addContact={addContact}
+        contact={contact}
+      />
       <StatusBar style="auto" hidden={true} />
     </View>
   );
@@ -129,27 +136,5 @@ const styles = StyleSheet.create({
   numberContact: {
     textAlign: "center",
     fontSize: 15,
-  },
-  inputsContainer: {
-    padding: 10,
-    backgroundColor: "#0862b1",
-  },
-  input: {
-    backgroundColor: "white",
-    margin: 5,
-    padding: 5,
-  },
-  button: {
-    height: 60,
-    width: 100,
-    backgroundColor: "#1b9729",
-    alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
-  },
-  textBtn: {
-    color: "white",
-    fontSize: 20,
   },
 });

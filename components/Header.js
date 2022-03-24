@@ -10,15 +10,13 @@ export default Header = () => {
 
 const styles = StyleSheet.create({
   headerContainer: {
-   height:60,
-   backgroundColor:"#0862b1",
-   alignItems:"center",
-   justifyContent:"center",
+    height: 60,
+    backgroundColor: "#0862b1",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  textHeader:{
-    fontSize:30,
-    color:"white",
-  }
- 
+  textHeader: {
+    fontSize: 30,
+    color: "white",
+  },
 });
-
