@@ -3,28 +3,20 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   FlatList,
   TouchableOpacity,
 } from "react-native";
 import { useState, useEffect } from "react";
 import Contact from "./components/Contact";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import Header from "./components/Header";
+import Input from "./components/Input";
 
 export default function App() {
-  const [contacts, setContacts] = useState([
-    { name: "test", email: "test", phone: "test" },
-    { name: "test", email: "test", phone: "test" },
-    { name: "test", email: "test", phone: "test" },
-    { name: "test", email: "test", phone: "test" },
-  ]);
-
+  const [contacts, setContacts] = useState([]);
   const [contact, setContact] = useState({});
 
   const handleAddName = (name) => {
-    console.log(name);
     const tmpContact = { ...contact };
     tmpContact.name = name;
     setContact(tmpContact);
@@ -33,14 +25,12 @@ export default function App() {
   const handleAddEmail = (email) => {
     const tmpContact = { ...contact };
     tmpContact.email = email;
-    console.log(email);
     setContact(tmpContact);
   };
 
   const handleAddPhone = (phone) => {
     const tmpContact = { ...contact };
     tmpContact.phone = phone;
-    console.log(phone);
     setContact(tmpContact);
   };
 
@@ -49,6 +39,7 @@ export default function App() {
       const tmpContacts = [...contacts];
       tmpContacts.push(contact);
       setContacts(tmpContacts);
+      setContact({});
     } else {
       alert("Vous devez entrer en nom valide !");
     }
@@ -62,9 +53,8 @@ export default function App() {
 
   useEffect(() => {
     AsyncStorage.getItem("contacts").then((jsonContacts) => {
-      const newcontacts = JSON.parse(jsonContacts || "[]");
-      console.log(newcontacts);
-      setContacts(newcontacts);
+      const newContacts = JSON.parse(jsonContacts || "[]");
+      setContacts(newContacts);
     });
   }, []);
 
@@ -81,8 +71,16 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Header></Header>
-
       <View style={styles.contactContainer}>
+        {contacts.length === 0 ? (
+          <Text style={styles.numberContact}>
+            Vous n'avez aucun contact enregistré
+          </Text>
+        ) : (
+          <Text style={styles.numberContact}>
+            Nombre de contacts : {contacts.length}
+          </Text>
+        )}
         <FlatList
           data={contacts}
           renderItem={({ item, index }) => (
@@ -92,25 +90,25 @@ export default function App() {
               deleteContact={deleteContact}
             ></Contact>
           )}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item, index) => index}
         ></FlatList>
       </View>
       <View style={styles.inputsContainer}>
-        <TextInput
-          onChangeText={handleAddName}
-          placeholder="enter the name"
-          style={styles.input}
-        ></TextInput>
-        <TextInput
-          onChangeText={handleAddEmail}
-          placeholder="enter the email"
-          style={styles.input}
-        ></TextInput>
-        <TextInput
-          onChangeText={handleAddPhone}
-          placeholder="enter the phone"
-          style={styles.input}
-        ></TextInput>
+        <Input
+          onChange={handleAddName}
+          placeHold="Entrez le nom du contact"
+          valueInput={contact.name}
+        ></Input>
+        <Input
+          onChange={handleAddEmail}
+          placeHold="Entrez son email"
+          valueInput={contact.email}
+        ></Input>
+        <Input
+          onChange={handleAddPhone}
+          placeHold="Entrez son numéro de téléphone"
+          valueInput={contact.phone}
+        ></Input>
         <TouchableOpacity style={styles.button} onPress={addContact}>
           <Text style={styles.textBtn}>Valider</Text>
         </TouchableOpacity>
@@ -126,28 +124,32 @@ const styles = StyleSheet.create({
   },
   contactContainer: {
     margin: 10,
-    flex: 2,
+    flex: 1,
+  },
+  numberContact: {
+    textAlign: "center",
+    fontSize: 15,
   },
   inputsContainer: {
     padding: 10,
-    backgroundColor: "black",
-    flex:2,
+    backgroundColor: "#0862b1",
   },
   input: {
     backgroundColor: "white",
-    height: 50,
     margin: 5,
     padding: 5,
   },
   button: {
-    height: 50,
+    height: 60,
     width: 100,
-    backgroundColor: "blue",
+    backgroundColor: "#1b9729",
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 10,
   },
   textBtn: {
     color: "white",
+    fontSize: 20,
   },
 });
