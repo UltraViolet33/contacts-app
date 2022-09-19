@@ -13,18 +13,15 @@ export default Inputs = ({
       <Input
         onChange={handleAddName}
         placeHold="Entrez le nom du contact"
-        valueInput={contact.name}
-      ></Input>
+        valueInput={contact.name}></Input>
       <Input
         onChange={handleAddEmail}
         placeHold="Entrez son @email"
-        valueInput={contact.email}
-      ></Input>
+        valueInput={contact.email}></Input>
       <Input
         onChange={handleAddPhone}
         placeHold="Entrez son numéro de téléphone"
-        valueInput={contact.phone}
-      ></Input>
+        valueInput={contact.phone}></Input>
       <TouchableOpacity style={styles.button} onPress={addContact}>
         <Text style={styles.textBtn}>Valider</Text>
       </TouchableOpacity>

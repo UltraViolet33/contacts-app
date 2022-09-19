@@ -7,8 +7,7 @@ export default Input = ({ onChange, placeHold, valueInput }) => {
         onChangeText={onChange}
         placeholder={placeHold}
         value={valueInput}
-        style={styles.input}
-      ></TextInput>
+        style={styles.input}></TextInput>
     </View>
   );
 };

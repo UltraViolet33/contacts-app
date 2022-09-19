@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
 
 export default Contact = ({ contact, index, deleteContact }) => {
-  const handleDelete = (index) => {
+  const handleDelete = index => {
     deleteContact(index);
   };
 
@@ -22,8 +22,7 @@ export default Contact = ({ contact, index, deleteContact }) => {
           style={styles.icon}
           onPress={() => {
             handleDelete(index);
-          }}
-        >
+          }}>
           ❌
         </Text>
       </View>
@@ -46,7 +45,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 25,
-    fontWeight:"bold",
+    fontWeight: "bold",
   },
   icon: {
     flex: 1,

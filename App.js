@@ -12,19 +12,19 @@ export default function App() {
   const [contact, setContact] = useState({});
 
   // handle the name/email/phone number for contact
-  const handleAddName = (name) => {
+  const handleAddName = name => {
     const tmpContact = { ...contact };
     tmpContact.name = name;
     setContact(tmpContact);
   };
 
-  const handleAddEmail = (email) => {
+  const handleAddEmail = email => {
     const tmpContact = { ...contact };
     tmpContact.email = email;
     setContact(tmpContact);
   };
 
-  const handleAddPhone = (phone) => {
+  const handleAddPhone = phone => {
     const tmpContact = { ...contact };
     tmpContact.phone = phone;
     setContact(tmpContact);
@@ -32,29 +32,16 @@ export default function App() {
 
   // add a contact to contacts
   const addContact = () => {
-    const regexEmail = new RegExp("[a-z0-9]+@[a-z]+.[a-z]{2,3}");
-    const regexPhoneNumber = /^((\+)33|0)[1-9](\d{2}){4}$/;
-
-    //check the name
-    if (contact.name === "" || contact.name === undefined) {
-      alert("Vous devez entrez un nom valide ! ");
-      //check the email
-    } else if (contact.email !== undefined && !regexEmail.test(contact.email)) {
-      alert("Vous devez entrez une adresse email valide ! ");
-      const tmpContact = { ...contact };
-      tmpContact.email = undefined;
-      setContact(tmpContact);
-      // check the phone number
-    } else if (
-      contact.phone !== undefined &&
-      !contact.phone.match(regexPhoneNumber)
-    ) {
-      alert("Vous devez entrez un numéro de téléphone valide ! ");
-      const tmpContact = { ...contact };
-      tmpContact.phone = undefined;
-      setContact(tmpContact);
+    if (contact.name === undefined || contact.name === "") {
+      alert("Veuillez renseigner un nom !");
+      return;
+    } else if (contact.phone === "" || contact.phone === undefined) {
+      alert("Veuillez renseigner un numéro de téléphone valide !");
+      return;
+    } else if (contact.email === "" || contact.email === undefined) {
+      alert("Veuillez rensigner une adresse email valide !");
+      return;
     } else {
-      // add the contact to the state contacts
       const tmpContacts = [...contacts];
       tmpContacts.push(contact);
       setContacts(tmpContacts);
@@ -63,7 +50,7 @@ export default function App() {
   };
 
   // delete a contact
-  const deleteContact = (index) => {
+  const deleteContact = index => {
     const tmpContacts = [...contacts];
     tmpContacts.splice(index, 1);
     setContacts(tmpContacts);
@@ -71,7 +58,7 @@ export default function App() {
 
   //get the contacts from the asyncStorage or return []
   useEffect(() => {
-    AsyncStorage.getItem("contacts").then((jsonContacts) => {
+    AsyncStorage.getItem("contacts").then(jsonContacts => {
       const newContacts = JSON.parse(jsonContacts || "[]");
       setContacts(newContacts);
     });
@@ -83,10 +70,10 @@ export default function App() {
       .then(() => {
         console.log("save ok");
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err.message);
       });
-  });
+  }, [contacts]);
 
   return (
     <View style={styles.container}>
@@ -107,11 +94,9 @@ export default function App() {
             <Contact
               contact={item}
               index={index}
-              deleteContact={deleteContact}
-            ></Contact>
+              deleteContact={deleteContact}></Contact>
           )}
-          keyExtractor={(item, index) => index}
-        ></FlatList>
+          keyExtractor={(item, index) => index}></FlatList>
       </View>
       <Inputs
         handleAddName={handleAddName}
